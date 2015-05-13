@@ -126,6 +126,12 @@ remainder(X, Y) ->
 remainder(X, Y, Context) ->
   decimal_arith:remainder(number(X), number(Y), Context).
 
+round_to_integral(X) ->
+  round_to_integral(X, []).
+
+round_to_integral(X, Context) ->
+  decimal_arith:round_to_integral(decimal_conv:number(X), Context).
+
 sqrt(X) ->
   sqrt(X, []).
 
@@ -260,4 +266,13 @@ unit_test_() ->
   , ?_assertEqual(false, is_signed("2.50"))
   , ?_assertEqual(true, is_signed("-12"))
   , ?_assertEqual(true, is_signed("-0"))
+  , ?_assertEqual({0,2,0}, round_to_integral("2.1"))
+  , ?_assertEqual({0,100,0}, round_to_integral("100"))
+  , ?_assertEqual({0,100,0}, round_to_integral("100.0"))
+  , ?_assertEqual({0,102,0}, round_to_integral("101.5"))
+  , ?_assertEqual({1,102,0}, round_to_integral("-101.5"))
+  , ?_assertEqual({0,10,5}, round_to_integral("10E+5"))
+  , ?_assertEqual({0,2,0}, round_to_integral("2.1"))
+  , ?_assertEqual({0,789,75}, round_to_integral("7.89E+77"))
+  , ?_assertEqual({1,infinity}, round_to_integral("-Inf"))
   ].

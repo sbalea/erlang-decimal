@@ -309,6 +309,16 @@ remainder(X, Y, Context) ->
       X
   end.
 
+round_to_integral(X, _) when ?is_NaN(X) ->
+  X;
+round_to_integral(X, _) when ?is_infinite(X) ->
+  X;
+round_to_integral({S, C, E}, _) when E >= 0 ->
+  {S, C, E};
+round_to_integral({S, C, E}, Context) ->
+  Size = length(integer_to_list(C)),
+  decimal_rounding:apply(decimal_context:rounding(Context), Size + E, {S, C, E}).
+
 sqrt(X, _Context) when ?is_zero(X) ->
   X;
 sqrt(X, _Context) when ?is_signed(X) ->
